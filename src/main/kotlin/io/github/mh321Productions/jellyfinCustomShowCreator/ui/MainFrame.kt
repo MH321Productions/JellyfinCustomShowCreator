@@ -1,5 +1,6 @@
 package io.github.mh321Productions.jellyfinCustomShowCreator.ui
 
+import io.github.mh321Productions.jellyfinCustomShowCreator.data.ShowInfo
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.SeasonTab
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.ShowTab
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.Tab
@@ -12,6 +13,9 @@ import javax.swing.JTabbedPane
 class MainFrame : JFrame() {
 
     var useAutoTheme = true
+        private set
+
+    var show = ShowInfo()
         private set
 
     private val tabMain: JTabbedPane
