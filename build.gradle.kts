@@ -16,6 +16,8 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
 
+    implementation(kotlin("reflect"))
+
     implementation("io.github.pdvrieze.xmlutil:core:0.91.2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
