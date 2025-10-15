@@ -17,10 +17,13 @@ dependencies {
     testImplementation(kotlin("test"))
 
     implementation("io.github.pdvrieze.xmlutil:core:0.91.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+
     implementation("com.miglayout:miglayout-swing:11.4.2")
     implementation("com.formdev:flatlaf:3.6.1")
     implementation("com.formdev:flatlaf-extras:3.6.1")
-    implementation("com.github.Dansoftowner:jSystemThemeDetector:3.6")
+
+    implementation("com.github.Dansoftowner:jSystemThemeDetector:3.9.1")
     implementation("org.slf4j:slf4j-nop:2.0.17")
 }
 
