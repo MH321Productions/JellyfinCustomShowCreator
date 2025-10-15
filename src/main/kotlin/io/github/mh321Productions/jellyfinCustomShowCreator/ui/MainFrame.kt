@@ -1,14 +1,20 @@
 package io.github.mh321Productions.jellyfinCustomShowCreator.ui
 
+import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.SeasonTab
+import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.ShowTab
+import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.Tab
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.widgets.MainMenuBar
+import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
 import javax.swing.JFrame
+import javax.swing.JTabbedPane
 
 class MainFrame : JFrame() {
 
     var useAutoTheme = true
         private set
 
+    private val tabMain: JTabbedPane
 
     init {
         title = "Jellyfin Custom Show Creator"
@@ -18,5 +24,13 @@ class MainFrame : JFrame() {
         setLocationRelativeTo(null)
 
         jMenuBar = MainMenuBar(this)
+        layout = MigLayout("", "[grow]", "[grow]")
+
+        tabMain = JTabbedPane()
+        tabMain.addTab(ShowTab(this))
+        tabMain.addTab(SeasonTab(this))
+        add(tabMain, "cell 0 0, grow")
     }
+
+    private fun JTabbedPane.addTab(tab: Tab) = addTab(tab.title, tab.icon, tab)
 }
