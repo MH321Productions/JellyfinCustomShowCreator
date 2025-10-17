@@ -1,17 +1,20 @@
 package io.github.mh321Productions.jellyfinCustomShowCreator.data
 
-import io.github.mh321Productions.jellyfinCustomShowCreator.data.annotations.UiIgnore
-import io.github.mh321Productions.jellyfinCustomShowCreator.data.annotations.UiUseTextArea
+import io.github.mh321Productions.jellyfinCustomShowCreator.data.annotations.UiEntry
+import io.github.mh321Productions.jellyfinCustomShowCreator.data.enums.ShowStatus
+import io.github.mh321Productions.jellyfinCustomShowCreator.ui.widgets.metadata.PropertyType
 import kotlinx.serialization.Serializable
 
 @Serializable
-class ShowInfo {
-    var name = "Test"
+data class ShowInfo(
+    @UiEntry(0, PropertyType.TextField, "Show name")
+    var name: String = "Test",
 
-    @UiUseTextArea
-    var description = "Test\nTest"
+    @UiEntry(1, PropertyType.TextArea)
+    var description: String = "Test\nTest",
 
+    @UiEntry(2, PropertyType.Enum)
+    var status: ShowStatus = ShowStatus.Continuing,
 
-    @UiIgnore
-    val seasons = mutableListOf<SeasonInfo>()
-}
+    val seasons: MutableList<SeasonInfo> = mutableListOf(),
+)
