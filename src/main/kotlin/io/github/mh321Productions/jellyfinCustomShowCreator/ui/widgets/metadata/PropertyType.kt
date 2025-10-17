@@ -4,6 +4,5 @@ enum class PropertyType {
     TextField,
     TextArea,
     Number,
-    Checkbox,
     Enum
 }
