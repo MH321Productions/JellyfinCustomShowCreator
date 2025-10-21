@@ -3,8 +3,7 @@ package io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs
 import io.github.mh321Productions.jellyfinCustomShowCreator.data.ShowInfo
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.MainFrame
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.ThemeUtils
-import io.github.mh321Productions.jellyfinCustomShowCreator.ui.widgets.episodes.EpisodeListPanel
-import io.github.mh321Productions.jellyfinCustomShowCreator.ui.widgets.episodes.UnassignedEpisodePanel
+import io.github.mh321Productions.jellyfinCustomShowCreator.ui.widgets.images.ImagePanel
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.widgets.metadata.MetadataPanel
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.widgets.metadata.extractors.ShowDataExtractor
 import net.miginfocom.swing.MigLayout
@@ -14,18 +13,18 @@ class ShowTab(frame: MainFrame) : Tab(frame, "Show info", null) {
 
     //Note: The scroll panes are never really null, but can be when not initialized during a call of updateUI
     private val spMeta: JScrollPane?
-    private val spEpisodes: JScrollPane?
+    private val spPoster: JScrollPane?
 
-    private val panelEpisodes: EpisodeListPanel<UnassignedEpisodePanel>
+    private val panelPoster: ImagePanel
     private val panelMetadata: MetadataPanel<ShowInfo>
 
     init {
-        layout = MigLayout("", "[grow 60][grow 20]", "[grow]")
+        layout = MigLayout("", "[grow 40][grow 60]", "[grow]")
 
-        panelEpisodes = EpisodeListPanel<UnassignedEpisodePanel>(frame)
-        spEpisodes = JScrollPane(panelEpisodes)
-        spEpisodes.border = ThemeUtils.createTitledBorder("Episodes")
-        add(spEpisodes, "cell 0 0, grow")
+        panelPoster = ImagePanel(frame, null) {}
+        spPoster = JScrollPane(panelPoster)
+        spPoster.border = ThemeUtils.createTitledBorder("Poster")
+        add(spPoster, "cell 0 0, grow")
 
         panelMetadata = MetadataPanel(frame, frame.show, ShowDataExtractor())
         spMeta = JScrollPane(panelMetadata)
@@ -36,7 +35,7 @@ class ShowTab(frame: MainFrame) : Tab(frame, "Show info", null) {
     override fun updateUI() {
         super.updateUI()
 
-        spEpisodes?.border = ThemeUtils.createTitledBorder("Episodes")
+        spPoster?.border = ThemeUtils.createTitledBorder("Poster")
         spMeta?.border = ThemeUtils.createTitledBorder("Metadata")
     }
 }
