@@ -8,6 +8,7 @@ data class ShowInfo(
     var name: String = "Test",
     var description: String = "Test\nTest",
     var status: ShowStatus = ShowStatus.Continuing,
+    var posterFile: String = "",
 
     val seasons: MutableList<SeasonInfo> = mutableListOf(),
 )
