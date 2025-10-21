@@ -18,6 +18,9 @@ class MainFrame : JFrame() {
     var show = ShowInfo()
         private set
 
+    var isDirty = false
+        private set
+
     private val tabMain: JTabbedPane
 
     init {
@@ -34,6 +37,11 @@ class MainFrame : JFrame() {
         tabMain.addTab(ShowTab(this))
         tabMain.addTab(SeasonTab(this))
         add(tabMain, "cell 0 0, grow")
+    }
+
+    fun markDirty() {
+        isDirty = true
+        //TODO: Handle title and quit/save logic
     }
 
     private fun JTabbedPane.addTab(tab: Tab) = addTab(tab.title, tab.icon, tab)
