@@ -4,7 +4,7 @@ import io.github.mh321Productions.jellyfinCustomShowCreator.data.ShowInfo
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.SeasonTab
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.ShowTab
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.Tab
-import io.github.mh321Productions.jellyfinCustomShowCreator.ui.widgets.MainMenuBar
+import io.github.mh321Productions.jellyfinCustomShowCreator.ui.widgets.menu.MainMenuBar
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
 import javax.swing.JFrame
