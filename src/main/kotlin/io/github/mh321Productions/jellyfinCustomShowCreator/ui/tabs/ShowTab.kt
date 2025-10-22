@@ -21,7 +21,7 @@ class ShowTab(frame: MainFrame) : Tab(frame, "Show info", null) {
     init {
         layout = MigLayout("", "[grow 40][grow 60]", "[grow]")
 
-        panelPoster = ImagePanel(frame, null) {}
+        panelPoster = ImagePanel(frame, frame.show.posterFile) { frame.show.posterFile = it }
         spPoster = JScrollPane(panelPoster)
         spPoster.border = ThemeUtils.createTitledBorder("Poster")
         add(spPoster, "cell 0 0, grow")

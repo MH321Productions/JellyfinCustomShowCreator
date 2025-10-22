@@ -44,15 +44,6 @@ class ImageTransferHandler(private val frame: MainFrame) : TransferHandler() {
             return false
         }
 
-        val image: BufferedImage
-        try {
-            image = ImageIO.read(files[0])
-        } catch (ex: IOException) {
-            JOptionPane.showMessageDialog(frame, "The file is not an image or could not be read:\n${ex.message}", "Import failed", JOptionPane.ERROR_MESSAGE)
-            return false
-        }
-
-        panel.image = image
-        return true
+        return panel.setImage(files[0])
     }
 }
