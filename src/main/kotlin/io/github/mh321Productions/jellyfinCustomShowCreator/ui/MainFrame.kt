@@ -7,7 +7,11 @@ import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.Tab
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.widgets.menu.MainMenuBar
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
+import java.awt.event.WindowAdapter
+import java.awt.event.WindowEvent
+import java.io.File
 import javax.swing.JFrame
+import javax.swing.JOptionPane
 import javax.swing.JTabbedPane
 
 class MainFrame : JFrame() {
@@ -19,6 +23,9 @@ class MainFrame : JFrame() {
         private set
 
     var isDirty = false
+        private set
+
+    var rootFolder: File = File.listRoots()?.firstOrNull() ?: File("")
         private set
 
     private val tabMain: JTabbedPane
@@ -37,6 +44,10 @@ class MainFrame : JFrame() {
         tabMain.addTab(ShowTab(this))
         tabMain.addTab(SeasonTab(this))
         add(tabMain, "cell 0 0, grow")
+
+        addWindowClosingListener(::closeRequested)
+
+        println(rootFolder)
     }
 
     fun markDirty() {
@@ -44,5 +55,12 @@ class MainFrame : JFrame() {
         //TODO: Handle title and quit/save logic
     }
 
+    private fun closeRequested(e: WindowEvent) {
+        JOptionPane.showMessageDialog(this, "Close Requested", "Info", JOptionPane.INFORMATION_MESSAGE)
+    }
+
     private fun JTabbedPane.addTab(tab: Tab) = addTab(tab.title, tab.icon, tab)
+    private fun addWindowClosingListener(listener: (WindowEvent) -> Unit) = addWindowListener(object: WindowAdapter() {
+        override fun windowClosing(e: WindowEvent) = listener(e)
+    })
 }
