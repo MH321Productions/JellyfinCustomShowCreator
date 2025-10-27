@@ -16,7 +16,7 @@ import javax.swing.JPanel
 
 class ImagePanel(private val frame: MainFrame, imagePath: String, private val updateListener: (String) -> Unit) : JPanel() {
 
-    private var image: BufferedImage? = loadImage(imagePath.relativeFile(frame.rootFolder), true)
+    private var image: BufferedImage? = loadImage(imagePath.relativeFile(frame.rootDir), true)
 
     init {
         transferHandler = ImageTransferHandler(frame)
@@ -34,7 +34,7 @@ class ImagePanel(private val frame: MainFrame, imagePath: String, private val up
     }
 
     fun setImage(path: File): Boolean {
-        if (!path.isRelativeTo(frame.rootFolder)) {
+        if (!path.isRelativeTo(frame.rootDir)) {
             JOptionPane.showMessageDialog(frame, "The image must be in the same or a subdirectory of the project file", "Import failed", JOptionPane.ERROR_MESSAGE)
             return false
         }
@@ -42,7 +42,7 @@ class ImagePanel(private val frame: MainFrame, imagePath: String, private val up
         val loadedImage = loadImage(path)
         if (loadedImage != null) {
             image = loadedImage
-            updateListener(path.toRelativeString(frame.rootFolder))
+            updateListener(path.toRelativeString(frame.rootDir))
             frame.markDirty()
             repaint()
             return true

@@ -6,14 +6,16 @@ import io.github.mh321Productions.jellyfinCustomShowCreator.ui.dialogs.HelpDialo
 import java.awt.event.InputEvent
 import java.awt.event.KeyEvent
 import java.awt.event.WindowEvent
+import java.io.File
 import javax.swing.*
 
-class MainMenuBar(private val frame: MainFrame) : JMenuBar() {
+class MainMenuBar(private val frame: MainFrame, private val onOpen: () -> Unit, private val onSave: () -> Unit) : JMenuBar() {
 
     private val menuFile = JMenu("File")
     private val menuHelp = JMenu("Help")
 
-    private val miOpen = JMenuItem("Open folder")
+    private val miOpen = JMenuItem("Open project folder")
+    private val miSave = JMenuItem("Save project")
     private val miQuit = JMenuItem("Quit")
 
     private val miHelp = JMenuItem("Help")
@@ -21,10 +23,12 @@ class MainMenuBar(private val frame: MainFrame) : JMenuBar() {
 
     init {
         miOpen.accelerator = KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK)
-        miOpen.addActionListener {
-            JOptionPane.showMessageDialog(frame, "File opened", "Test", JOptionPane.INFORMATION_MESSAGE)
-        }
+        miOpen.addActionListener { onOpen() }
         menuFile.add(miOpen)
+
+        miSave.accelerator = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK)
+        miSave.addActionListener { onSave() }
+        menuFile.add(miSave)
 
         menuFile.addSeparator()
 

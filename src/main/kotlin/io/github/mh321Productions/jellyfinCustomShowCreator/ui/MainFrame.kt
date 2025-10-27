@@ -13,11 +13,13 @@ import java.io.File
 import javax.swing.JFrame
 import javax.swing.JOptionPane
 import javax.swing.JTabbedPane
+import kotlin.system.exitProcess
 
-class MainFrame : JFrame() {
+class MainFrame(rootDir: File) : JFrame() {
 
-    var useAutoTheme = true
-        private set
+    companion object {
+        const val TITLE_BASE = "Jellyfin Custom Show Creator"
+    }
 
     var show = ShowInfo()
         private set
@@ -25,19 +27,19 @@ class MainFrame : JFrame() {
     var isDirty = false
         private set
 
-    var rootFolder: File = File.listRoots()?.firstOrNull() ?: File("")
+    var rootDir = rootDir
         private set
 
     private val tabMain: JTabbedPane
 
     init {
-        title = "Jellyfin Custom Show Creator"
-        defaultCloseOperation = EXIT_ON_CLOSE
+        title = TITLE_BASE
+        defaultCloseOperation = DO_NOTHING_ON_CLOSE
         size = Dimension(1280, 720)
         isResizable = true
         setLocationRelativeTo(null)
 
-        jMenuBar = MainMenuBar(this)
+        jMenuBar = MainMenuBar(this, ::onOpen, ::onSave)
         layout = MigLayout("", "[grow]", "[grow]")
 
         tabMain = JTabbedPane()
@@ -46,21 +48,46 @@ class MainFrame : JFrame() {
         add(tabMain, "cell 0 0, grow")
 
         addWindowClosingListener(::closeRequested)
-
-        println(rootFolder)
     }
 
     fun markDirty() {
         isDirty = true
-        //TODO: Handle title and quit/save logic
+        title = createTitle()
     }
 
-    private fun closeRequested(e: WindowEvent) {
-        JOptionPane.showMessageDialog(this, "Close Requested", "Info", JOptionPane.INFORMATION_MESSAGE)
+    private fun onOpen() {
+        //TODO: Open and read project
+    }
+
+    private fun onSave() {
+        if (!isDirty) return
+
+        //TODO: Implement save
+
+        isDirty = false
+        title = createTitle()
+    }
+
+    private fun closeRequested() {
+        if (isDirty) {
+            when (JOptionPane.showConfirmDialog(this, "Do You want to save before closing?", "Unsaved changes", JOptionPane.YES_NO_CANCEL_OPTION)) {
+                JOptionPane.YES_OPTION -> onSave()
+                JOptionPane.CANCEL_OPTION -> return
+            }
+        }
+        dispose()
+        exitProcess(0)
+    }
+
+    private fun createTitle(): String {
+        val unsavedChanges = if (isDirty) " *" else ""
+        val show = if (show.name.isEmpty()) "" else " - ${show.name}"
+
+        return "$TITLE_BASE$show$unsavedChanges"
     }
 
     private fun JTabbedPane.addTab(tab: Tab) = addTab(tab.title, tab.icon, tab)
-    private fun addWindowClosingListener(listener: (WindowEvent) -> Unit) = addWindowListener(object: WindowAdapter() {
-        override fun windowClosing(e: WindowEvent) = listener(e)
+    private fun addWindowClosingListener(listener: () -> Unit) = addWindowListener(object: WindowAdapter() {
+        override fun windowClosing(e: WindowEvent) = listener()
     })
 }

@@ -26,7 +26,7 @@ class ShowTab(frame: MainFrame) : Tab(frame, "Show info", null) {
         spPoster.border = ThemeUtils.createTitledBorder("Poster")
         add(spPoster, "cell 0 0, grow")
 
-        panelMetadata = MetadataPanel(frame, frame.show, ShowDataExtractor())
+        panelMetadata = MetadataPanel(frame, frame.show, ShowDataExtractor(frame))
         spMeta = JScrollPane(panelMetadata)
         spMeta.border = ThemeUtils.createTitledBorder("Metadata")
         add(spMeta, "cell 1 0, grow")
