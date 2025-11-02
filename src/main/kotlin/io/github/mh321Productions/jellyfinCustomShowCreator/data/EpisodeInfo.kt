@@ -3,7 +3,9 @@ package io.github.mh321Productions.jellyfinCustomShowCreator.data
 import kotlinx.serialization.Serializable
 
 @Serializable
-class EpisodeInfo {
-    var name = ""
-    var number = -1
-}
+data class EpisodeInfo(
+    var name: String = "",
+    var number: Int = -1,
+    var season: Int = -1,
+    var originalFilename: String = "",
+)
