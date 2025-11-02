@@ -33,6 +33,11 @@ class ImagePanel(private val frame: MainFrame, imagePath: String, private val up
         g2d.drawImage(image, null, 0, 0)
     }
 
+    fun setImage(relativePath: String) {
+        if (relativePath.isBlank()) removeImage()
+        else setImage(relativePath.relativeFile(frame.rootDir))
+    }
+
     fun setImage(path: File): Boolean {
         if (!path.isRelativeTo(frame.rootDir)) {
             JOptionPane.showMessageDialog(frame, "The image must be in the same or a subdirectory of the project file", "Import failed", JOptionPane.ERROR_MESSAGE)

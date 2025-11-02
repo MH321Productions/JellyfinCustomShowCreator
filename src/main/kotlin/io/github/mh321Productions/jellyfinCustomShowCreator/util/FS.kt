@@ -4,4 +4,4 @@ import java.io.File
 
 fun File.isRelativeTo(rootDir: File) = relativeToOrNull(rootDir) != null
 
-fun String.relativeFile(rootDir: File?) = File(rootDir, this)
+fun String.relativeFile(rootDir: File) = File(rootDir, this)
