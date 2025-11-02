@@ -1,6 +1,6 @@
 package io.github.mh321Productions.jellyfinCustomShowCreator.ui
 
-import io.github.mh321Productions.jellyfinCustomShowCreator.data.ShowInfo
+import io.github.mh321Productions.jellyfinCustomShowCreator.io.parser.ProjectParser
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.SeasonTab
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.ShowTab
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.Tab
@@ -10,6 +10,7 @@ import java.awt.Dimension
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import java.io.File
+import javax.swing.JFileChooser
 import javax.swing.JFrame
 import javax.swing.JOptionPane
 import javax.swing.JTabbedPane
@@ -21,7 +22,7 @@ class MainFrame(rootDir: File) : JFrame() {
         const val TITLE_BASE = "Jellyfin Custom Show Creator"
     }
 
-    var show = ShowInfo()
+    var show = ProjectParser.parseProject(rootDir)
         private set
 
     var isDirty = false
@@ -31,9 +32,11 @@ class MainFrame(rootDir: File) : JFrame() {
         private set
 
     private val tabMain: JTabbedPane
+    private val tabShow: ShowTab
+    private val tabSeason: SeasonTab
 
     init {
-        title = TITLE_BASE
+        title = createTitle()
         defaultCloseOperation = DO_NOTHING_ON_CLOSE
         size = Dimension(1280, 720)
         isResizable = true
@@ -43,8 +46,11 @@ class MainFrame(rootDir: File) : JFrame() {
         layout = MigLayout("", "[grow]", "[grow]")
 
         tabMain = JTabbedPane()
-        tabMain.addTab(ShowTab(this))
-        tabMain.addTab(SeasonTab(this))
+        tabShow = ShowTab(this)
+        tabSeason = SeasonTab(this)
+
+        tabMain.addTab(tabShow)
+        tabMain.addTab(tabSeason)
         add(tabMain, "cell 0 0, grow")
 
         addWindowClosingListener(::closeRequested)
@@ -56,22 +62,44 @@ class MainFrame(rootDir: File) : JFrame() {
     }
 
     private fun onOpen() {
-        //TODO: Open and read project
-    }
+        if (isDirty) {
+            when (JOptionPane.showConfirmDialog(this, "Do You want to save before opening a new folder?", "Unsaved changes", JOptionPane.YES_NO_CANCEL_OPTION)) {
+                JOptionPane.YES_OPTION -> if (!onSave()) return
+                JOptionPane.CANCEL_OPTION -> return
+            }
+        }
 
-    private fun onSave() {
-        if (!isDirty) return
+        val fc = JFileChooser(rootDir)
+        fc.fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
+        fc.dialogTitle = "Select a project directory"
+        fc.isMultiSelectionEnabled = false
 
-        //TODO: Implement save
+        if (fc.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) return
 
+        rootDir = fc.selectedFile
+        show = ProjectParser.parseProject(rootDir)
         isDirty = false
         title = createTitle()
+
+        tabShow.updateData()
+    }
+
+    private fun onSave(): Boolean {
+        if (!isDirty) return true
+
+        if (ProjectParser.saveProject(rootDir, show)) {
+            isDirty = false
+            title = createTitle()
+            return true
+        }
+
+        return false
     }
 
     private fun closeRequested() {
         if (isDirty) {
             when (JOptionPane.showConfirmDialog(this, "Do You want to save before closing?", "Unsaved changes", JOptionPane.YES_NO_CANCEL_OPTION)) {
-                JOptionPane.YES_OPTION -> onSave()
+                JOptionPane.YES_OPTION -> if (!onSave()) return
                 JOptionPane.CANCEL_OPTION -> return
             }
         }
