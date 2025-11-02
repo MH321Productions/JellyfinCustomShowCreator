@@ -24,7 +24,7 @@ dependencies {
     implementation("com.formdev:flatlaf-extras:3.6.1")
 
     implementation("com.github.Dansoftowner:jSystemThemeDetector:3.9.1")
-    implementation("org.slf4j:slf4j-nop:2.0.17")
+    implementation("org.slf4j:slf4j-jdk14:2.0.17")
 }
 
 tasks.test {

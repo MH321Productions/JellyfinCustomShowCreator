@@ -3,8 +3,10 @@ package io.github.mh321Productions.jellyfinCustomShowCreator
 import com.jthemedetecor.OsThemeDetector
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.MainFrame
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.ThemeUtils
+import io.github.mh321Productions.jellyfinCustomShowCreator.util.DialogLogHandler
 import java.awt.EventQueue
 import java.io.File
+import java.util.logging.LogManager
 import javax.swing.JFileChooser
 import javax.swing.SwingUtilities
 
@@ -15,8 +17,13 @@ fun main(args: Array<String>) {
 
         val rootDir = loadCmdlineArgDir(args.firstOrNull()) ?: selectDir() ?: return@invokeLater
 
+        val rootLogger = LogManager.getLogManager().getLogger("")
+        val dialogHandler = DialogLogHandler()
+        rootLogger.addHandler(dialogHandler)
+
         val frame = MainFrame(rootDir)
         frame.isVisible = true
+        dialogHandler.frame = frame
 
         detector.registerListener { isDark -> SwingUtilities.invokeLater { ThemeUtils.setTheme(isDark) } }
     }
