@@ -1,10 +1,17 @@
 package io.github.mh321Productions.jellyfinCustomShowCreator.ui
 
 import io.github.mh321Productions.jellyfinCustomShowCreator.io.parser.ProjectParser
+import io.github.mh321Productions.jellyfinCustomShowCreator.io.worker.FileScannerWorker
+import io.github.mh321Productions.jellyfinCustomShowCreator.io.worker.Worker
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.SeasonTab
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.ShowTab
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.Tab
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.widgets.menu.MainMenuBar
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.swing.Swing
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
 import java.awt.event.WindowAdapter
@@ -54,12 +61,17 @@ class MainFrame(rootDir: File) : JFrame() {
         add(tabMain, "cell 0 0, grow")
 
         addWindowClosingListener(::closeRequested)
+
+        startWorker(FileScannerWorker())
     }
 
     fun markDirty() {
         isDirty = true
         title = createTitle()
     }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    fun startWorker(worker: Worker) = GlobalScope.launch(Dispatchers.Swing) { worker.doWork(this@MainFrame) }
 
     private fun onOpen() {
         if (isDirty) {
