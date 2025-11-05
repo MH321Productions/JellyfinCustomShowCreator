@@ -4,11 +4,10 @@ import io.github.mh321Productions.jellyfinCustomShowCreator.data.VideoInfo
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.MainFrame
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.future.await
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromStream
 import org.slf4j.LoggerFactory
 import java.io.File
+import javax.swing.JProgressBar
 
 class FileScannerWorker : Worker {
     companion object {
@@ -18,18 +17,30 @@ class FileScannerWorker : Worker {
         private val jsonDecoder = Json {ignoreUnknownKeys = true}
     }
 
-    override suspend fun doWork(frame: MainFrame) {
+    private var maxNum = -1
+    private var currentIndex = 0
+
+    private val title: String
+        get() = "Scanning files $currentIndex/$maxNum"
+
+    override suspend fun doWork(frame: MainFrame, progressBar: JProgressBar) {
         val videoFiles = frame.rootDir.listFiles { file -> file.extension in extensions }?.toList() ?: return
 
-        val infos = videoFiles
-            .mapNotNull { readFile(it) }
+        maxNum = videoFiles.size
 
-        val json = Json { prettyPrint = true }
-        infos.forEach { println(json.encodeToString(it)) }
+        progressBar.maximum = maxNum
+        progressBar.isStringPainted = true
+
+        val infos = videoFiles
+            .mapNotNull { readFile(it, progressBar) }
+
     }
 
-    private suspend fun readFile(file: File): VideoInfo? {
-        println("Reading file ${file.name}")
+    private suspend fun readFile(file: File, progressBar: JProgressBar): VideoInfo? {
+        logger.debug("Reading file ${file.name}")
+
+        progressBar.value = ++currentIndex
+        progressBar.string = title
 
         val process = ProcessBuilder(*ffprobeArgs, file.name)
             .directory(file.parentFile)
@@ -38,15 +49,16 @@ class FileScannerWorker : Worker {
             .start()
 
         val string = process.inputStream.bufferedReader().readText()
+        val err = process.errorStream.bufferedReader().readText()
 
         process.onExit().await()
 
-        println("ffprobe finished")
-
         if (process.exitValue() != 0) {
-            logger.error("Couldn't scan '${file.name}':\n${process.errorStream.bufferedReader().readText()}")
+            logger.error("Couldn't scan '${file.name}':\n${err}")
             return null
         }
+
+        delay(500)
 
         return try {
             jsonDecoder.decodeFromString(string)

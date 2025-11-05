@@ -7,20 +7,14 @@ import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.SeasonTab
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.ShowTab
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.Tab
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.widgets.menu.MainMenuBar
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import java.io.File
-import javax.swing.JFileChooser
-import javax.swing.JFrame
-import javax.swing.JOptionPane
-import javax.swing.JTabbedPane
+import javax.swing.*
 import kotlin.system.exitProcess
 
 class MainFrame(rootDir: File) : JFrame() {
@@ -50,7 +44,7 @@ class MainFrame(rootDir: File) : JFrame() {
         setLocationRelativeTo(null)
 
         jMenuBar = MainMenuBar(this, ::onOpen, ::onSave)
-        layout = MigLayout("", "[grow]", "[grow]")
+        layout = MigLayout("", "[grow]", "[grow][]")
 
         tabMain = JTabbedPane()
         tabShow = ShowTab(this)
@@ -58,7 +52,7 @@ class MainFrame(rootDir: File) : JFrame() {
 
         tabMain.addTab(tabShow)
         tabMain.addTab(tabSeason)
-        add(tabMain, "cell 0 0, grow")
+        add(tabMain, "cell 0 0, grow, wrap")
 
         addWindowClosingListener(::closeRequested)
 
@@ -71,7 +65,16 @@ class MainFrame(rootDir: File) : JFrame() {
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    fun startWorker(worker: Worker) = GlobalScope.launch(Dispatchers.Swing) { worker.doWork(this@MainFrame) }
+    fun startWorker(worker: Worker) = GlobalScope.launch(Dispatchers.Swing) {
+        val progressBar = JProgressBar()
+        add(progressBar, "grow, wrap")
+
+        worker.doWork(this@MainFrame, progressBar)
+
+        remove(progressBar)
+        revalidate()
+        repaint()
+    }
 
     private fun onOpen() {
         if (isDirty) {
@@ -94,6 +97,7 @@ class MainFrame(rootDir: File) : JFrame() {
         title = createTitle()
 
         tabShow.updateData()
+        startWorker(FileScannerWorker())
     }
 
     private fun onSave(): Boolean {
