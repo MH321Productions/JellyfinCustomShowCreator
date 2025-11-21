@@ -3,6 +3,8 @@ package io.github.mh321Productions.jellyfinCustomShowCreator.io.worker
 import io.github.mh321Productions.jellyfinCustomShowCreator.data.VideoInfo
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.MainFrame
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.future.await
 import kotlinx.serialization.json.Json
 import org.slf4j.LoggerFactory
@@ -31,8 +33,10 @@ class FileScannerWorker : Worker {
         progressBar.maximum = maxNum
         progressBar.isStringPainted = true
 
-        val infos = videoFiles
+        videoFiles
+            .asFlow()
             .mapNotNull { readFile(it, progressBar) }
+            .collect { println(it.format.filename) }
 
     }
 
