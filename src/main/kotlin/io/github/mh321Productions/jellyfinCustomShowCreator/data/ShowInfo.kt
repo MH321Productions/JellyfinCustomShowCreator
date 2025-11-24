@@ -12,6 +12,6 @@ data class ShowInfo(
     var posterFile: String = "",
     var year: Int = LocalDateTime.now().year,
 
-    val seasons: MutableList<SeasonInfo> = mutableListOf(),
+    val seasons: MutableList<SeasonInfo> = mutableListOf(SeasonInfo()),
     val unassignedEpisodes: MutableList<EpisodeInfo> = mutableListOf(),
 )

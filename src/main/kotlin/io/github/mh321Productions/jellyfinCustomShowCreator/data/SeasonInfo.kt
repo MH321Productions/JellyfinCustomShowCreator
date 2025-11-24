@@ -4,5 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SeasonInfo(
-    var number: Int = -1
+    var number: Int = 1,
+    var posterFile: String = "",
 )
