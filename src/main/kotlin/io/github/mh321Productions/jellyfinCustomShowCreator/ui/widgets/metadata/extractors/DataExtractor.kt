@@ -11,6 +11,10 @@ import javax.swing.*
 abstract class DataExtractor<T>(protected val frame: MainFrame) {
     abstract fun getWidgets(data: T): List<PropertyInfo>
 
+    protected fun label(name: String, value: String) = PropertyInfo(name, JLabel(value))
+
+    protected fun label(name: String, value: Icon) = PropertyInfo(name, JLabel(value))
+
     protected fun textField(name: String, initialValue: String, updateListener: (String) -> Unit): PropertyInfo {
         val comp = JTextField(initialValue)
         comp.document.addDocumentListener(UpdatedDocumentListener(frame, comp, updateListener))
