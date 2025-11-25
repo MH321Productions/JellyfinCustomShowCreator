@@ -9,10 +9,12 @@ import io.github.mh321Productions.jellyfinCustomShowCreator.ui.widgets.metadata.
 import net.miginfocom.swing.MigLayout
 import javax.swing.DefaultListModel
 import javax.swing.JButton
+import javax.swing.JCheckBox
 import javax.swing.JList
 import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.ListSelectionModel
+import kotlin.math.min
 
 class SeasonTab(frame: MainFrame) : Tab(frame, "Season infos", null) {
 
@@ -25,11 +27,13 @@ class SeasonTab(frame: MainFrame) : Tab(frame, "Season infos", null) {
     private val listSeasons: JList<Int>
     private val btnAddSeason: JButton
     private val btnRemoveSeason: JButton
+    private val chkbHasSpecials: JCheckBox
 
     private val seasonListModel: DefaultListModel<Int>
 
-    private val selectedSeasonIndex: Int
+    private var selectedSeasonIndex: Int
         get() = if (listSeasons.selectedIndex == -1) 0 else listSeasons.selectedIndex
+        set(value) { listSeasons.selectedIndex = value }
 
     private val currentSeason: SeasonInfo
         get() = frame.show.seasons[selectedSeasonIndex]
@@ -40,23 +44,26 @@ class SeasonTab(frame: MainFrame) : Tab(frame, "Season infos", null) {
 
         panelList = JPanel()
         panelList.border = ThemeUtils.createTitledBorder("Seasons")
-        panelList.layout = MigLayout("", "[grow][grow]", "[grow][]")
+        panelList.layout = MigLayout("", "[grow][grow]", "[][grow][]")
+
+        chkbHasSpecials = JCheckBox("Add Specials", frame.show.seasons.firstOrNull()?.number == 0)
+        panelList.add(chkbHasSpecials, "cell 0 0 2 1, grow")
 
         seasonListModel = DefaultListModel()
         seasonListModel.addAll(frame.show.seasons.map { it.number })
         listSeasons = JList(seasonListModel)
         listSeasons.selectionMode = ListSelectionModel.SINGLE_SELECTION
         listSeasons.selectedIndex = 0
-        listSeasons.addListSelectionListener { onSelectSeason() }
-        panelList.add(JScrollPane(listSeasons), "cell 0 0 2 1, grow")
+        listSeasons.addListSelectionListener { if (!it.valueIsAdjusting) onSelectSeason() }
+        panelList.add(JScrollPane(listSeasons), "cell 0 1 2 1, grow")
 
         btnAddSeason = JButton("Add season")
         btnAddSeason.addActionListener { onAddSeason() }
-        panelList.add(btnAddSeason, "cell 0 1, grow")
+        panelList.add(btnAddSeason, "cell 0 2, grow")
 
         btnRemoveSeason = JButton("Remove season")
         btnRemoveSeason.addActionListener { onRemoveSeason() }
-        panelList.add(btnRemoveSeason, "cell 1 1, grow")
+        panelList.add(btnRemoveSeason, "cell 1 2, grow")
 
         add(panelList, "cell 0 0, grow")
 
@@ -84,10 +91,14 @@ class SeasonTab(frame: MainFrame) : Tab(frame, "Season infos", null) {
 
     private fun onAddSeason() {
         seasonListModel.addElement(seasonListModel.lastElement() + 1)
+        selectedSeasonIndex = seasonListModel.size() - 1
     }
 
     private fun onRemoveSeason() {
-        if (seasonListModel.size > 1)
+        if (seasonListModel.size > 1) {
+            val index = selectedSeasonIndex
             seasonListModel.remove(selectedSeasonIndex)
+            selectedSeasonIndex = min(index, seasonListModel.size() - 1)
+        }
     }
 }
