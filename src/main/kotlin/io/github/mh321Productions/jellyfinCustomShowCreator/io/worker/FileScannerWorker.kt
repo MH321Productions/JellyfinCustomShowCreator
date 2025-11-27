@@ -36,7 +36,7 @@ class FileScannerWorker : Worker {
         videoFiles
             .asFlow()
             .mapNotNull { readFile(it, progressBar) }
-            .collect { println(it.format.filename) }
+            .collect { println(it.format.tags?.title ?: it.format.filename) }
 
     }
 
