@@ -14,12 +14,16 @@ object ProjectParser {
         val file = File(rootDir, SHOW_FILE)
         if (!file.exists()) return ShowInfo()
 
-        return try {
+        val info = try {
             Json.decodeFromString(file.readText(Charsets.UTF_8))
         } catch (e: Exception) {
             logger.error("Couldn't parse project file, an empty file is used instead", e)
             ShowInfo()
         }
+
+        info.seasons.sortBy { it.number }
+
+        return info
     }
 
     fun saveProject(rootDir: File, showInfo: ShowInfo): Boolean {
