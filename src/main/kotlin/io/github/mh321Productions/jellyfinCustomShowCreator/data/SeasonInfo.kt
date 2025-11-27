@@ -6,4 +6,6 @@ import kotlinx.serialization.Serializable
 data class SeasonInfo(
     var number: Int = 1,
     var posterFile: String = "",
+
+    val episodes: MutableList<EpisodeInfo> = mutableListOf(),
 )
