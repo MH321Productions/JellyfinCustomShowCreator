@@ -39,7 +39,7 @@ class ShowTab(frame: MainFrame) : Tab(frame, "Show info", null) {
         spMeta?.border = ThemeUtils.createTitledBorder("Metadata")
     }
 
-    fun updateData() {
+    override fun updateData() {
         panelMetadata.data = frame.show
         panelPoster.setImage(frame.show.posterFile)
     }
