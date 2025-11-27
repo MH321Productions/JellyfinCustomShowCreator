@@ -25,7 +25,7 @@ class MetadataPanel<TData: Any>(private val frame: MainFrame, data: TData, priva
         extractor.getWidgets(data)
             .forEach(::addProperty)
 
-        invalidate()
+        revalidate()
     }
 
     private fun addProperty(propertyInfo: PropertyInfo) {
