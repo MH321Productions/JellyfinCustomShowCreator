@@ -3,6 +3,7 @@ package io.github.mh321Productions.jellyfinCustomShowCreator.ui
 import io.github.mh321Productions.jellyfinCustomShowCreator.io.parser.ProjectParser
 import io.github.mh321Productions.jellyfinCustomShowCreator.io.worker.FileScannerWorker
 import io.github.mh321Productions.jellyfinCustomShowCreator.io.worker.Worker
+import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.EpisodeTab
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.SeasonTab
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.ShowTab
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.Tab
@@ -35,6 +36,7 @@ class MainFrame(rootDir: File) : JFrame() {
     private val tabMain: JTabbedPane
     private val tabShow: ShowTab
     private val tabSeason: SeasonTab
+    private val tabEpisodes: EpisodeTab
 
     init {
         title = createTitle()
@@ -49,9 +51,11 @@ class MainFrame(rootDir: File) : JFrame() {
         tabMain = JTabbedPane()
         tabShow = ShowTab(this)
         tabSeason = SeasonTab(this)
+        tabEpisodes = EpisodeTab(this)
 
         tabMain.addTab(tabShow)
         tabMain.addTab(tabSeason)
+        tabMain.addTab(tabEpisodes)
         add(tabMain, "cell 0 0, grow, wrap")
 
         addWindowClosingListener(::closeRequested)
@@ -76,6 +80,12 @@ class MainFrame(rootDir: File) : JFrame() {
         repaint()
     }
 
+    fun updateData() {
+        tabShow.updateData()
+        tabSeason.updateData()
+        tabEpisodes.updateData()
+    }
+
     private fun onOpen() {
         if (isDirty) {
             when (JOptionPane.showConfirmDialog(this, "Do You want to save before opening a new folder?", "Unsaved changes", JOptionPane.YES_NO_CANCEL_OPTION)) {
@@ -96,7 +106,7 @@ class MainFrame(rootDir: File) : JFrame() {
         isDirty = false
         title = createTitle()
 
-        tabShow.updateData()
+        updateData()
         startWorker(FileScannerWorker())
     }
 

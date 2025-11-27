@@ -8,4 +8,5 @@ data class EpisodeInfo(
     var number: Int = -1,
     var season: Int = -1,
     var originalFilename: String = "",
+    var thumbnail: String = "",
 )
