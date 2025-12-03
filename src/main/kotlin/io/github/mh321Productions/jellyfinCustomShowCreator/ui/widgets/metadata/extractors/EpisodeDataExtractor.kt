@@ -5,6 +5,6 @@ import io.github.mh321Productions.jellyfinCustomShowCreator.ui.MainFrame
 
 class EpisodeDataExtractor(frame: MainFrame) : DataExtractor<EpisodeInfo>(frame) {
     override fun getWidgets(data: EpisodeInfo) = listOf(
-        textField("Title: ", data.name) { data.name = it },
+        textField("Title: ", data.title) { data.title = it },
     )
 }
