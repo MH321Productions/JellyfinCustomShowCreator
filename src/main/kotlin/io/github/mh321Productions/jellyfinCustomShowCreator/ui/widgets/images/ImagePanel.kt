@@ -56,6 +56,11 @@ class ImagePanel(private val frame: MainFrame, imagePath: String, private val up
         return false
     }
 
+    fun setImage(image: BufferedImage?) {
+        this.image = image
+        repaint()
+    }
+
     fun removeImage() {
         if (image == null) return
 
