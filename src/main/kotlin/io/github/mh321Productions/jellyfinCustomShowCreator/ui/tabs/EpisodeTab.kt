@@ -86,16 +86,17 @@ class EpisodeTab(frame: MainFrame) : Tab(frame, "Episodes", null) {
     }
 
     private fun getNodeName(index: Pair<Int, Int>): String {
-        return when (index.second) {
-            -1 -> when (index.first) {
+        val (season, episode) = index
+        return when (episode) {
+            -1 -> when (season) {
                 -2 -> "TV Show"
                 -1 -> "Unassigned Episodes"
                 0 -> "Specials"
                 else -> "Season ${index.first}"
             }
-            else -> when (index.first) {
-                -1 -> frame.show.unassignedEpisodes.getOrNull(index.second)?.title ?: MISSING_EPISODE
-                else -> frame.show.seasons.getSeason(index.first).episodes.getEpisodeOrNull(index.second)?.title ?: MISSING_EPISODE
+            else -> when (season) {
+                -1 -> frame.show.unassignedEpisodes.getOrNull(episode)?.title ?: MISSING_EPISODE
+                else -> frame.show.seasons.getSeason(season).episodes.getEpisodeOrNull(episode)?.title ?: MISSING_EPISODE
             }
         }
     }
