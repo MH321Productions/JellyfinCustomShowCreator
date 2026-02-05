@@ -2,10 +2,7 @@ package io.github.mh321Productions.jellyfinCustomShowCreator.ui.widgets.images
 
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.MainFrame
 import java.awt.datatransfer.DataFlavor
-import java.awt.image.BufferedImage
 import java.io.File
-import java.io.IOException
-import javax.imageio.ImageIO
 import javax.swing.JComponent
 import javax.swing.JOptionPane
 import javax.swing.TransferHandler

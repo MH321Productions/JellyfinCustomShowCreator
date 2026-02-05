@@ -32,7 +32,11 @@ class EpisodeTab(frame: MainFrame) : Tab(frame, "Episodes", null) {
     private var selectedIndex = Pair(-1, -1)
 
     private val currentEpisode: EpisodeInfo
-        get() = if (selectedIndex.first == -1) frame.show.unassignedEpisodes[selectedIndex.second] else frame.show.seasons.getSeason(selectedIndex.first).episodes.getEpisode(selectedIndex.second)
+        get() =
+            if (selectedIndex.first == -1)
+                frame.show.unassignedEpisodes[selectedIndex.second]
+            else
+                frame.show.seasons.getSeason(selectedIndex.first).episodes.getEpisode(selectedIndex.second)
 
     init {
         layout = MigLayout("", "[grow 10][grow 90]", "[grow][grow]")
