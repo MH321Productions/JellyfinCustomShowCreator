@@ -94,7 +94,7 @@ class SeasonTab(frame: MainFrame) : Tab(frame, "Seasons", null) {
     }
 
     override fun updateData() {
-        chkbHasSpecials.isEnabled = seasons.first().number == 0
+        chkbHasSpecials.isSelected = seasons.first().number == 0
         seasonListModel.clear()
         seasonListModel.addAll(seasons.map { it.number })
     }
