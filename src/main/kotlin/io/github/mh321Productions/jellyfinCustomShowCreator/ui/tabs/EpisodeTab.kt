@@ -5,12 +5,14 @@ import io.github.mh321Productions.jellyfinCustomShowCreator.util.getEpisode
 import io.github.mh321Productions.jellyfinCustomShowCreator.util.getSeason
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.MainFrame
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.ThemeUtils
+import io.github.mh321Productions.jellyfinCustomShowCreator.ui.widgets.episodes.EpisodeTransferHandler
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.widgets.images.ImagePanel
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.widgets.metadata.MetadataPanel
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.widgets.metadata.extractors.EpisodeDataExtractor
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.widgets.tree.CustomDefaultTreeCellRenderer
 import io.github.mh321Productions.jellyfinCustomShowCreator.util.getEpisodeOrNull
 import net.miginfocom.swing.MigLayout
+import javax.swing.DropMode
 import javax.swing.JScrollPane
 import javax.swing.JTree
 import javax.swing.tree.DefaultMutableTreeNode
@@ -45,6 +47,9 @@ class EpisodeTab(frame: MainFrame) : Tab(frame, "Episodes", null) {
         treeEpisodes.cellRenderer = CustomDefaultTreeCellRenderer(::getNodeName)
         treeEpisodes.showsRootHandles = true
         treeEpisodes.isRootVisible = false
+        treeEpisodes.transferHandler = EpisodeTransferHandler()
+        treeEpisodes.dragEnabled = true
+        treeEpisodes.dropMode = DropMode.INSERT
         treeEpisodes.addTreeSelectionListener { onSelectEpisode() }
         spEpisodes = JScrollPane(treeEpisodes)
         spEpisodes.border = ThemeUtils.createTitledBorder("Episodes")
@@ -77,13 +82,13 @@ class EpisodeTab(frame: MainFrame) : Tab(frame, "Episodes", null) {
         val root = DefaultMutableTreeNode(Pair(-2, -1))
 
         frame.show.seasons.forEach {
-            val season = DefaultMutableTreeNode(Pair(it.number, -1))
-            it.episodes.forEach { ep -> season.add(DefaultMutableTreeNode(Pair(it.number, ep.number))) }
+            val season = DefaultMutableTreeNode(Pair(it.number, -1), true)
+            it.episodes.forEach { ep -> season.add(DefaultMutableTreeNode(Pair(it.number, ep.number), false)) }
             root.add(season)
         }
 
-        val unassigned = DefaultMutableTreeNode(Pair(-1, -1))
-        frame.show.unassignedEpisodes.forEachIndexed { index, _ -> unassigned.add(DefaultMutableTreeNode(Pair(-1, index))) }
+        val unassigned = DefaultMutableTreeNode(Pair(-1, -1), true)
+        frame.show.unassignedEpisodes.forEachIndexed { index, _ -> unassigned.add(DefaultMutableTreeNode(Pair(-1, index), false)) }
         root.add(unassigned)
 
         return root
@@ -96,7 +101,7 @@ class EpisodeTab(frame: MainFrame) : Tab(frame, "Episodes", null) {
                 -2 -> "TV Show"
                 -1 -> "Unassigned Episodes"
                 0 -> "Specials"
-                else -> "Season ${index.first}"
+                else -> "Season $season"
             }
             else -> when (season) {
                 -1 -> frame.show.unassignedEpisodes.getOrNull(episode)?.title ?: MISSING_EPISODE
