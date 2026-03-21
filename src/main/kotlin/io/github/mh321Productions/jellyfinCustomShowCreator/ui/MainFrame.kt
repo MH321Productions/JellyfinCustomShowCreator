@@ -7,6 +7,7 @@ import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.EpisodeTab
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.SeasonTab
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.ShowTab
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.Tab
+import io.github.mh321Productions.jellyfinCustomShowCreator.ui.tabs.TestTab
 import io.github.mh321Productions.jellyfinCustomShowCreator.ui.widgets.menu.MainMenuBar
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
@@ -37,6 +38,7 @@ class MainFrame(rootDir: File) : JFrame() {
     private val tabShow: ShowTab
     private val tabSeason: SeasonTab
     private val tabEpisodes: EpisodeTab
+    private val tabTest: TestTab
 
     init {
         title = createTitle()
@@ -52,10 +54,12 @@ class MainFrame(rootDir: File) : JFrame() {
         tabShow = ShowTab(this)
         tabSeason = SeasonTab(this)
         tabEpisodes = EpisodeTab(this)
+        tabTest = TestTab(this)
 
         tabMain.addTab(tabShow)
         tabMain.addTab(tabSeason)
         tabMain.addTab(tabEpisodes)
+        tabMain.addTab(tabTest)
         add(tabMain, "cell 0 0, grow, wrap")
 
         addWindowClosingListener(::closeRequested)
@@ -66,6 +70,7 @@ class MainFrame(rootDir: File) : JFrame() {
     fun markDirty() {
         isDirty = true
         title = createTitle()
+        updateData()
     }
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -84,6 +89,7 @@ class MainFrame(rootDir: File) : JFrame() {
         tabShow.updateData()
         tabSeason.updateData()
         tabEpisodes.updateData()
+        tabTest.updateData()
     }
 
     private fun onOpen() {
